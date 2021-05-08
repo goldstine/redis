@@ -3,12 +3,13 @@
 nosql数据库不支持ACID，但是支持事务
 nosql更适合高性能的数据存储
 ## redis的安装
+```
 首先将redis的安装包上传到centos上的/opt，然后通过安装gcc的环境，因为需要make编译将redis编译成.c的项目
 然后将.tar.gz文件解压 tar -zxvf redis...tar.gz
 然后进入该文件目录 cd redis 执行make编译
 然后通过make install安装，默认会安进/usr/local/bin目录下
 进入/usr/local/bin,可以看到一下目录,比如redis-cli
-
+```
 ## 启动redis
 （1）前台启动：直接执行redis-server
 (2)后台启动：在解压后的redis中有一个redis-conf文件，修改其中的配置
@@ -41,7 +42,7 @@ flushall通杀全部库，清空所有库
 String是redis最基本的类型，
 String类型是二进制安全的，意味着redis的String可以包含任何数据，比如jpg图片或者序列化的对象
 String类型是redis最基本的数据类型，一个redis中字符串value最多可以是512M
-
+```
 常用命令：
 （1）set key value  如果对相同的key进行set就会对value进行覆盖
 (2)get key
@@ -66,11 +67,12 @@ redis单命令的原子性主要得益于redis的单线程
 
 ** redis的底层结构类似于arrayList的动态冗余内存与分配方式 ** 扩容的方式，当字符串长度小于1M时，每次扩容为原来的2倍；如果超过1M，扩容时只会多扩1M的空间，需要注意的是字符串最大长度是512M
 redis的数据类型，指的是value的数据类型，不是指key的数据类型
-
+```
 ### 列表List
 单键多值，redis列表是简单的字符串列表，按照插入顺序排序，可以添加一个元素到列表的头部或者尾部
 它的底层实际上是一个双向链表，对两端的操作性能很高，通过索引下标的操作中间的节点性能会较差
 常用操作：
+```
 lpush/rpush key value1 value2 value3 ... 从左边或右边插入一个或多个值
 lpop/rpop key 从左边或右边吐出一个值 值在键在，值光键亡
 rpoplpush key1 key2从key1列表右边吐出一个值，插入到key2列表左边
@@ -87,9 +89,10 @@ List的数据结构为快速链表quickList
 首先在列表元素较少的情况下会使用一块连续的内存存储，这个结构是zipList，也即是压缩列表，他将所有的元素紧挨着一起存储，分配的是一块连续的内存
 当数据量比较多的时候次啊会改成快速链表
 普通的双向链表的指针存储空间浪费较大，所以redis将链表和ziplist结合起来组成了quicklist，也就是将多个ziplist使用双向指针串起来使用，这样既满足了快速插入删除的性能，也不会出现太大的空间冗余
-
+```
 ## 集合Set
 set是可以自动重排的，不存在重复的数据，redis的set是String类型的无序集合，他底层是一个value为null的hash表，所以添加，删除，查找复杂度都是O（1）
+```
 （1）sadd key value1 value2...
 将一个或多个member元素加入到集合key中，已经存在的member元素将被忽略
 （2）smembers key取出该集合的所有值
@@ -105,9 +108,10 @@ set是可以自动重排的，不存在重复的数据，redis的set是String类
 （11）sdiff key1 key2返回两个元素的差集元素（key1中的，不包括key2中的）
 set结构是字典，java中hashset的内部实现使用的是hashmap，只不过所有的value都指向同一个对象
 redis的set结构也是一样的，它的内部也使用hash结构，所有的value都指向同意内部值
-
+```
 ## 哈希hash
 redis hash是一个string类型的field和value的映射表，实际上value是一个引射表，就是一个表（对象）一张表对应一个bean对象
+```
 （1）hset key field value给key集合中的field键赋值value
 （2）hget key field 从key集合中的field去除value
 （3）hmset key1 field1 value1 field2 value2...批量设置hash的值
@@ -118,11 +122,12 @@ redis hash是一个string类型的field和value的映射表，实际上value是�
 （8）hsetnx key field value 将哈希表key中的域field的值设置为value，当且仅当域field不存在
 
 Hash类型对应的数据结构有两种，ziplist(压缩列表)，hashtable(哈希表)，当field-value长度较短且个数较少的时候，使用·ziplist，否则hashtable
+```
 ## 有序集合Zset（sorted set）
 redis的有序集合zset与普通的集合set非常相似，是一个没有重复元素的字符串集合
 不同的是有序集合的每一个成员都关联一个评分（score），这个评分被用来按照从最低分到最高分的方式排序集合中的成员，集合的成员视为一个，但是评分是可以重复的
 所以可以根据评分获得一个范围的元素
-
+```
 （1）zadd key socer1 value1 score2 value2...将一个或多个member元素及其score值加入到有序集合中
 (2)zrange key start stop [withscores]   返回有序集合key中，下标在start stop之间的元素
 带withscores，可以让分数一起和值返回到结果集
@@ -135,5 +140,5 @@ zrangebyscore key 300 500 withscores   起初评分在300 到500之间的项    
 (8)zrank key value返回该值在集合中的排名 ，从0开始
 
 底层还使用了跳表进行查找，可以更快地找到所需要的元素
-
+```
 
